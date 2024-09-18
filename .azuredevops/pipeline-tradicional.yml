@@ -11,7 +11,7 @@ stages:
             displayName: Unit Tests
           - task: PublishCodeCoverageResults@2
             inputs:
-              summaryFileLocation: target
+              summaryFileLocation: target/surefire-reports
           - script: mvn package
-          - publish: "*.war"
+          - publish: "target/helloworld.war"
             artifact: build_artifacts
