@@ -14,11 +14,30 @@ stages:
             inputs:
               testResultsFormat: "JUnit"
               mergeTestResults: true # Optional
-          - task: PublishCodeCoverageResults@1
+          - task: PublishCodeCoverageResults@2
             displayName: "Publish publish code coverage"
             inputs:
               summaryFileLocation: $(System.DefaultWorkingDirectory)/target/site/jacoco/jacoco.xml
               pathToSources: $(System.DefaultWorkingDirectory)/src/main/java/
           - script: mvn package
+            displayName: Package app
           - publish: "target/helloworld.war"
             artifact: build_artifacts
+            displayName: Publish app
+      - job: Security_Scan
+        displayName: Security Scan
+        steps:
+          - task: AdvancedSecurity-Codeql-Init@1
+            displayName: Initialize CodeQL
+            inputs:
+          # build mode `none` is supported for C# and Java, and JavaScript is an interpreted language
+          # and build mode `none` has no impact on JavaScript analysis
+              languages: 'csharp, java, javascript' 
+              buildtype: 'none'
+
+          - task: AdvancedSecurity-Codeql-Analyze@1
+            displayName: Perform CodeQL Analysis
+
+
+    
+  
