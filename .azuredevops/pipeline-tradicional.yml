@@ -9,9 +9,16 @@ stages:
         steps:
           - script: mvn test
             displayName: Unit Tests
-          - task: PublishCodeCoverageResults@2
+          - task: PublishTestResults@2
+            displayName: "Publish test results"
             inputs:
-              summaryFileLocation: target/surefire-reports
+              testResultsFormat: "JUnit"
+              mergeTestResults: true # Optional
+          - task: PublishCodeCoverageResults@1
+            displayName: "Publish publish code coverage"
+            inputs:
+              summaryFileLocation: $(System.DefaultWorkingDirectory)/target/site/jacoco/jacoco.xml
+              pathToSources: $(System.DefaultWorkingDirectory)/src/main/java/
           - script: mvn package
           - publish: "target/helloworld.war"
             artifact: build_artifacts
