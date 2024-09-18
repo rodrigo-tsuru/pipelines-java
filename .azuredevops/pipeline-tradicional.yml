@@ -1,0 +1,17 @@
+trigger: none
+
+stages:
+  - stage: CI_Build
+    displayName: CI - Build
+    jobs:
+      - job: Build_App
+        displayName: Build Application
+        steps:
+          - script: mvn test
+            displayName: Unit Tests
+          - task: PublishCodeCoverageResults@2
+            inputs:
+              summaryFileLocation: target
+          - script: mvn package
+          - publish: "*.war"
+            artifact: build_artifacts
